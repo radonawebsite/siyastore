@@ -3,190 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siya Store | Neo-Noti Universe</title>
+    <title>Siya Store | NOTI</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Outfit:wght@200;400;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --sky-neon: #00d4ff;
-            --soft-blue: #e1f5fe;
-            --deep-blue: #0277bd;
+            --sky: #a5d8ff;
+            --main: #74c0fc;
+            --deep: #1c7ed6;
             --white: #ffffff;
         }
 
         body { 
             margin: 0; background: var(--white); 
-            font-family: 'Outfit', sans-serif; overflow-x: hidden; color: var(--deep-blue);
+            font-family: 'Outfit', sans-serif; overflow-x: hidden; 
+            cursor: none; /* غادي نعوضو الماوس بواحد الدائرة سحرية */
         }
 
-        /* Sci-Fi Grid Background */
+        /* Custom Cursor */
+        #cursor {
+            position: fixed; width: 20px; height: 20px;
+            background: rgba(116, 192, 252, 0.3); border: 2px solid var(--main);
+            border-radius: 50%; pointer-events: none; z-index: 9999;
+            transition: transform 0.1s ease;
+        }
+
         canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
 
-        .ui-layer { position: relative; z-index: 10; }
-
-        /* Navigation - Glassmorphism Sci-Fi */
         nav {
             position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between;
-            align-items: center; padding: 15px 5%; box-sizing: border-box; z-index: 1000;
-            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px);
-            border-bottom: 2px solid var(--soft-blue);
+            align-items: center; padding: 20px 5%; box-sizing: border-box; z-index: 1000;
         }
         
-        .nav-logo img { height: 75px; filter: drop-shadow(0 0 10px var(--sky-neon)); }
+        .nav-logo img { height: 80px; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .nav-logo img:hover { transform: scale(1.1) rotate(5deg); }
 
-        .nav-links a { 
-            text-decoration: none; color: var(--deep-blue); font-family: 'Syncopate', sans-serif;
-            font-weight: 700; font-size: 0.7rem; letter-spacing: 2px; transition: 0.3s;
-        }
-
-        /* Hero - Cyber Sky */
         .hero {
             height: 100vh; display: flex; flex-direction: column; justify-content: center;
-            align-items: center; text-align: center;
+            align-items: center; text-align: center; position: relative; z-index: 10;
         }
 
-        .hero-title { 
-            font-family: 'Syncopate', sans-serif;
-            font-size: clamp(3rem, 12vw, 7rem); font-weight: 900; line-height: 0.9;
-            margin: 0; text-transform: uppercase;
-            background: linear-gradient(to bottom, var(--deep-blue), var(--sky-neon));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.3));
+        .hero h1 { 
+            font-size: clamp(4rem, 15vw, 9rem); font-weight: 900; color: var(--deep);
+            margin: 0; pointer-events: none;
         }
 
-        /* Scanner Line Animation */
-        .scanner-line {
-            position: absolute; width: 100%; height: 2px; background: var(--sky-neon);
-            opacity: 0.2; box-shadow: 0 0 15px var(--sky-neon);
-            animation: scan 4s linear infinite; z-index: 5;
-        }
-
-        @keyframes scan { 0% { top: 0; } 100% { top: 100vh; } }
-
-        /* Products - Neo Cards */
+        /* Interactive Product Cards */
         .products { 
             padding: 100px 5%; display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-            gap: 40px; max-width: 1300px; margin: auto;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 50px; position: relative; z-index: 10;
         }
 
-        .neo-card {
-            background: rgba(255, 255, 255, 0.8); border: 1px solid var(--soft-blue);
-            padding: 20px; border-radius: 5px; position: relative;
-            overflow: hidden; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            clip-path: polygon(0 0, 90% 0, 100% 10%, 100% 100%, 10% 100%, 0 90%); /* Sci-Fi Cut */
+        .card {
+            background: rgba(255, 255, 255, 0.8); border-radius: 40px;
+            padding: 20px; border: 1px solid var(--sky);
+            transition: all 0.3s ease; text-align: center;
+            box-shadow: 0 10px 30px rgba(116, 192, 252, 0.1);
         }
 
-        .neo-card:hover { 
-            transform: translateY(-10px); 
-            border-color: var(--sky-neon);
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--main);
+            box-shadow: 0 20px 50px rgba(116, 192, 252, 0.3);
         }
 
-        .neo-card img { width: 100%; height: 400px; object-fit: cover; border-bottom: 2px solid var(--soft-blue); }
+        .card img { width: 100%; border-radius: 30px; margin-bottom: 15px; }
 
-        .btn-interact {
-            width: 100%; padding: 15px; background: transparent; 
-            border: 1px solid var(--deep-blue); color: var(--deep-blue);
-            font-family: 'Syncopate', sans-serif; font-size: 0.7rem; font-weight: 900;
-            cursor: pointer; margin-top: 20px; transition: 0.3s;
-            position: relative; overflow: hidden;
+        .btn {
+            padding: 15px 35px; background: var(--deep); color: white;
+            border: none; border-radius: 50px; font-weight: 700;
+            cursor: pointer; transition: 0.3s;
         }
 
-        .btn-interact:hover { background: var(--deep-blue); color: white; box-shadow: 0 0 20px var(--sky-neon); }
+        .btn:active { transform: scale(0.9); }
 
-        /* Footer */
-        footer { padding: 40px; text-align: center; font-size: 0.6rem; letter-spacing: 5px; font-family: 'Syncopate'; opacity: 0.5; }
     </style>
 </head>
 <body>
 
-    <div class="scanner-line"></div>
+    <div id="cursor"></div>
 
     <nav>
         <div class="nav-logo"><img src="assets/logo.jpg" onerror="this.src='assets/logo.png'" alt="Siya Store"></div>
-        <div class="nav-links"><a href="#shop">PROXIMITY_STORE</a></div>
+        <div style="font-weight: 900; letter-spacing: 5px; color: var(--main);">MENU</div>
     </nav>
 
-    <div class="ui-layer">
-        <section class="hero">
-            <h1 class="hero-title">NEO<br>VISION</h1>
-            <p style="letter-spacing: 10px; font-weight: 200;">SIYA STORE x NOTI DIGITAL</p>
-        </section>
-
-        <section class="products" id="shop">
-            <div class="neo-card" onclick="ripple(event)">
-                <img src="https://images.unsplash.com/photo-1614728263952-84ea206f99b6?q=80&w=1000" alt="Noti Art">
-                <h3>VIRTUAL_DATA_01</h3>
-                <p>$320.00</p>
-                <button class="btn-interact">INITIALIZE_PURCHASE</button>
-            </div>
-            <div class="neo-card" onclick="ripple(event)">
-                <img src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1000" alt="Noti Art">
-                <h3>AETHER_FRAME</h3>
-                <p>$580.00</p>
-                <button class="btn-interact">INITIALIZE_PURCHASE</button>
-            </div>
-        </section>
+    <div class="hero">
+        <p style="letter-spacing: 10px; color: var(--main);">COLLECTION BY NOTI</p>
+        <h1>SIYA STORE</h1>
     </div>
 
-    <footer>ACCESSING SIYA_DATABASE 2.0 // BY NOTI</footer>
+    <div class="products">
+        <div class="card" onclick="playEffect(event)">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000">
+            <h3>Sky Element #01</h3>
+            <button class="btn">VIEW DETAILS</button>
+        </div>
+        <div class="card" onclick="playEffect(event)">
+            <img src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1000">
+            <h3>Cloud Element #02</h3>
+            <button class="btn">VIEW DETAILS</button>
+        </div>
+    </div>
 
     <script>
-        // --- 3D Grid & Clouds ---
+        // --- 1. Custom Cursor Follower ---
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { x: e.clientX - 10, y: e.clientY - 10, duration: 0.2 });
+        });
+
+        // --- 2. Magnetic/Click Effect ---
+        function playEffect(e) {
+            // تأثير انفجار سحابي عند الضغط
+            for(let i=0; i<8; i++) {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: fixed; left: ${e.clientX}px; top: ${e.clientY}px;
+                    width: 15px; height: 15px; background: var(--main);
+                    border-radius: 50%; pointer-events: none; z-index: 2000;
+                    opacity: 0.6;
+                `;
+                document.body.appendChild(particle);
+                gsap.to(particle, {
+                    x: (Math.random() - 0.5) * 200,
+                    y: (Math.random() - 0.5) * 200,
+                    opacity: 0,
+                    scale: 0,
+                    duration: 1,
+                    onComplete: () => particle.remove()
+                });
+            }
+        }
+
+        // --- 3. 3D Clouds Background Control ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Infinite Sci-Fi Grid
-        const grid = new THREE.GridHelper(100, 50, 0x00d4ff, 0xe1f5fe);
-        grid.position.y = -2;
-        grid.material.opacity = 0.2;
-        grid.material.transparent = true;
-        scene.add(grid);
-
-        camera.position.z = 5;
-        camera.position.y = 1;
-
-        // --- Visual Effects ---
-        
-        // Ripple Effect on Click
-        function ripple(e) {
-            const circle = document.createElement('div');
-            circle.style.cssText = `
-                position: fixed; top: ${e.clientY}px; left: ${e.clientX}px;
-                width: 10px; height: 10px; border: 2px solid var(--sky-neon);
-                border-radius: 50%; pointer-events: none; z-index: 9999;
-                transform: translate(-50%, -50%);
-            `;
-            document.body.appendChild(circle);
-            gsap.to(circle, { scale: 20, opacity: 0, duration: 0.6, onComplete: () => circle.remove() });
+        // Spheres that act like "Soft Clouds"
+        const clouds = [];
+        const geom = new THREE.SphereGeometry(1, 32, 32);
+        for(let i=0; i<15; i++) {
+            const mat = new THREE.MeshPhongMaterial({ color: 0x74c0fc, transparent: true, opacity: 0.2 });
+            const cloud = new THREE.Mesh(geom, mat);
+            cloud.position.set((Math.random()-0.5)*10, (Math.random()-0.5)*10, (Math.random()-0.5)*10);
+            scene.add(cloud);
+            clouds.push(cloud);
         }
 
-        // Mouse Move Influence
+        scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+        const light = new THREE.PointLight(0xffffff, 1);
+        light.position.set(5, 5, 5);
+        scene.add(light);
+
+        camera.position.z = 5;
+
+        // Mouse Move -> Control Scene
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth - 0.5) * 2;
             const y = (e.clientY / window.innerHeight - 0.5) * 2;
-            gsap.to(camera.rotation, { y: -x * 0.1, x: -y * 0.1, duration: 1 });
+            gsap.to(camera.position, { x: x, y: -y, duration: 1.5 });
         });
 
         function animate() {
             requestAnimationFrame(animate);
-            grid.position.z += 0.05; // Moving Grid Effect
-            if(grid.position.z > 2) grid.position.z = 0;
+            clouds.forEach(c => {
+                c.rotation.y += 0.002;
+                c.position.y += Math.sin(Date.now() * 0.001) * 0.002;
+            });
             renderer.render(scene, camera);
         }
         animate();
-
-        window.addEventListener('resize', () => {
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-        });
     </script>
 </body>
 </html>
