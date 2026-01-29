@@ -3,142 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOTI | Official Luxury Store</title>
+    <title>Siya Store | NOTI Collection</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;700&family=Playfair+Display:ital,wght@0,400;1,700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --gold: #d4af37;
-            --dark: #050505;
-            --glass: rgba(255, 255, 255, 0.05);
+            --sky-blue: #87CEEB;
+            --deep-blue: #0077b6;
+            --white: #ffffff;
+            --light-bg: #f0faff;
         }
 
-        body, html { margin: 0; padding: 0; background: var(--dark); color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        body { margin: 0; background: var(--white); color: #333; font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
         canvas { position: fixed; top: 0; left: 0; z-index: -1; }
 
         /* Navigation */
         nav {
             position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between;
-            padding: 30px 50px; box-sizing: border-box; z-index: 100; backdrop-filter: blur(10px);
+            padding: 20px 50px; box-sizing: border-box; z-index: 100;
+            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(135, 206, 235, 0.3);
         }
-        .logo { font-family: 'Cinzel', serif; font-size: 1.8rem; letter-spacing: 5px; color: var(--gold); }
-        .nav-links a { color: white; text-decoration: none; margin-left: 30px; font-weight: 300; letter-spacing: 2px; transition: 0.3s; }
-        .nav-links a:hover { color: var(--gold); text-shadow: 0 0 10px var(--gold); }
+        .brand-logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: var(--deep-blue); text-transform: uppercase; }
+        .brand-logo span { color: var(--sky-blue); font-size: 0.8rem; display: block; font-family: 'Montserrat'; font-weight: 200; }
+
+        .nav-links a { color: #555; text-decoration: none; margin-left: 35px; font-size: 0.85rem; letter-spacing: 1px; transition: 0.3s; }
+        .nav-links a:hover { color: var(--sky-blue); }
 
         /* Hero Section */
         .hero {
             height: 100vh; display: flex; flex-direction: column; justify-content: center;
             align-items: center; text-align: center; background: transparent;
         }
-        .hero h1 { font-family: 'Cinzel', serif; font-size: 6rem; margin: 0; opacity: 0.9; }
-        .hero p { letter-spacing: 8px; text-transform: uppercase; font-weight: 300; color: var(--gold); }
+        .hero h2 { font-weight: 200; letter-spacing: 10px; color: var(--sky-blue); text-transform: uppercase; }
+        .hero h1 { font-family: 'Playfair Display', serif; font-size: 6rem; margin: 0; color: var(--deep-blue); }
 
         /* Shop Section */
-        .shop-container {
-            padding: 100px 50px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px; background: rgba(0,0,0,0.8);
+        #shop { padding: 80px 10%; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; background: var(--white); }
+        .item-card {
+            background: var(--light-bg); border-radius: 0; padding: 10px;
+            transition: 0.5s ease; border: 1px solid transparent;
         }
-        .product-card {
-            background: var(--glass); border: 1px solid rgba(212, 175, 55, 0.2);
-            padding: 20px; text-align: center; transition: 0.5s; position: relative; overflow: hidden;
-        }
-        .product-card:hover { transform: translateY(-10px); border-color: var(--gold); box-shadow: 0 0 30px rgba(212, 175, 55, 0.1); }
-        .product-card img { width: 100%; height: 350px; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
-        .product-card:hover img { filter: grayscale(0%); }
-        .price { color: var(--gold); font-size: 1.5rem; margin: 15px 0; }
-        .buy-btn {
-            background: transparent; border: 1px solid var(--gold); color: var(--gold);
-            padding: 10px 30px; cursor: pointer; text-transform: uppercase; transition: 0.3s;
-        }
-        .buy-btn:hover { background: var(--gold); color: black; }
+        .item-card:hover { transform: translateY(-10px); border-color: var(--sky-blue); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .item-card img { width: 100%; height: 450px; object-fit: cover; }
+        
+        .item-info { padding: 25px; text-align: center; }
+        .item-info h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin: 0; color: #222; }
+        .item-price { color: var(--deep-blue); font-weight: 700; font-size: 1.2rem; margin: 15px 0; display: block; }
 
-        footer { text-align: center; padding: 50px; color: #444; font-size: 0.8rem; letter-spacing: 2px; }
+        .buy-btn {
+            width: 100%; padding: 15px; background: var(--deep-blue); border: none;
+            color: white; font-weight: bold; cursor: pointer; transition: 0.3s; letter-spacing: 2px;
+        }
+        .buy-btn:hover { background: var(--sky-blue); }
+
+        footer { padding: 40px; text-align: center; background: var(--light-bg); color: #888; font-size: 0.75rem; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">NOTI</div>
+        <div class="brand-logo">Siya Store <span>Curated for NOTI</span></div>
         <div class="nav-links">
             <a href="#home">HOME</a>
-            <a href="#shop">COLLECTION</a>
-            <a href="#about">ARTIST</a>
-            <a href="#contact">CONTACT</a>
+            <a href="#shop">SHOP</a>
+            <a href="#">COLLECTION</a>
         </div>
     </nav>
 
     <section class="hero" id="home">
-        <p>Exclusive Art & Fashion</p>
-        <h1>NOTI WORLD</h1>
-        <button class="buy-btn" style="margin-top: 30px;" onclick="document.getElementById('shop').scrollIntoView({behavior: 'smooth'})">Explore Collection</button>
+        <h2>Exclusive Artist Series</h2>
+        <h1>NOTI</h1>
+        <p style="color: #888; letter-spacing: 3px;">Heavenly Creations & Timeless Art</p>
     </section>
 
-    <section class="shop-container" id="shop">
-        <div class="product-card">
-            <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=500" alt="Art 1">
-            <h3>Eternal Noti #01</h3>
-            <p class="price">$1,200</p>
-            <button class="buy-btn">Purchase</button>
+    <section id="shop">
+        <div class="item-card">
+            <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=1000" alt="Art 1">
+            <div class="item-info">
+                <h3>Azure Serenity #01</h3>
+                <span class="item-price">$1,800.00</span>
+                <button class="buy-btn">BUY NOW</button>
+            </div>
         </div>
-        <div class="product-card">
-            <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=500" alt="Art 2">
-            <h3>Golden Silence</h3>
-            <p class="price">$2,500</p>
-            <button class="buy-btn">Purchase</button>
-        </div>
-        <div class="product-card">
-            <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=500" alt="Art 3">
-            <h3>Abstract Vision</h3>
-            <p class="price">$950</p>
-            <button class="buy-btn">Purchase</button>
+        <div class="item-card">
+            <img src="https://images.unsplash.com/photo-1554188248-986adbb73be4?auto=format&fit=crop&q=80&w=1000" alt="Art 2">
+            <div class="item-info">
+                <h3>Cloud Vision</h3>
+                <span class="item-price">$2,400.00</span>
+                <button class="buy-btn">BUY NOW</button>
+            </div>
         </div>
     </section>
 
-    <footer>© 2026 NOTI OFFICIAL STORE. DESIGNED FOR EXCELLENCE.</footer>
+    <footer>© 2026 SIYA STORE. ARTISTIC DIRECTION BY NOTI.</footer>
 
     <script>
-        // 3. 3D Background with Particles and a Floating Crystal
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Particles
-        const partGeom = new THREE.BufferGeometry();
-        const partCount = 2000;
-        const posArray = new Float32Array(partCount * 3);
-        for(let i=0; i<partCount*3; i++) { posArray[i] = (Math.random() - 0.5) * 10; }
-        partGeom.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        const partMat = new THREE.PointsMaterial({ size: 0.005, color: 0xd4af37 });
-        const particles = new THREE.Points(partGeom, partMat);
-        scene.add(particles);
+        // Sky Blue Floating Particles
+        const particlesGeom = new THREE.BufferGeometry();
+        const count = 4000;
+        const positions = new Float32Array(count * 3);
+        for(let i=0; i<count*3; i++) { positions[i] = (Math.random() - 0.5) * 12; }
+        particlesGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const particlesMat = new THREE.PointsMaterial({ size: 0.008, color: 0x87CEEB, transparent: true, opacity: 0.5 });
+        const points = new THREE.Points(particlesGeom, particlesMat);
+        scene.add(points);
 
-        // Floating Diamond
-        const geom = new THREE.OctahedronGeometry(1, 0);
-        const mat = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: 0xd4af37, wireframe: true });
-        const crystal = new THREE.Mesh(geom, mat);
-        scene.add(crystal);
-
-        const light = new THREE.PointLight(0xffffff, 1);
-        light.position.set(5, 5, 5);
-        scene.add(light);
-        scene.add(new THREE.AmbientLight(0x404040));
-
-        camera.position.z = 3;
+        camera.position.z = 4;
 
         function animate() {
             requestAnimationFrame(animate);
-            crystal.rotation.y += 0.003;
-            crystal.rotation.z += 0.002;
-            particles.rotation.y += 0.0005;
+            points.rotation.y += 0.0008;
             renderer.render(scene, camera);
         }
         animate();
 
         window.addEventListener('resize', () => {
             renderer.setSize(window.innerWidth, window.innerHeight);
-            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.aspect = window.innerWidth/window.innerHeight;
             camera.updateProjectionMatrix();
         });
     </script>
