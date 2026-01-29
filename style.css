@@ -1,6 +1,0 @@
-body { margin: 0; font-family: sans-serif; background-color: #f0f8ff; text-align: center; }
-.container { display: flex; justify-content: space-between; align-items: center; padding: 10px 5%; background: white; }
-.logo { height: 70px; }
-nav a { margin: 0 15px; text-decoration: none; color: #3a80c0; font-weight: bold; }
-.hero { padding: 100px 20px; background: linear-gradient(135deg, #a3d9ff, #3a80c0); color: white; }
-button { padding: 15px 35px; border-radius: 30px; border: none; background: white; color: #3a80c0; font-weight: bold; cursor: pointer; margin-top: 20px; }
