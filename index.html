@@ -3,369 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siya Store | Quantum NOTI</title>
+    <title>Siya Store | Neo-Noti Universe</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Outfit:wght@200;400;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --quantum-blue: #00ffff; /* Cyber Blue */
-            --quantum-purple: #8a2be2; /* Electric Purple */
-            --dark-space: #0d0d1a;
-            --light-grid: rgba(0, 255, 255, 0.2);
+            --sky-neon: #00d4ff;
+            --soft-blue: #e1f5fe;
+            --deep-blue: #0277bd;
+            --white: #ffffff;
         }
 
         body { 
-            margin: 0; 
-            background: var(--dark-space); 
-            font-family: 'Share Tech Mono', monospace; 
-            overflow: hidden; 
-            color: var(--quantum-blue);
+            margin: 0; background: var(--white); 
+            font-family: 'Outfit', sans-serif; overflow-x: hidden; color: var(--deep-blue);
         }
 
-        canvas { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            z-index: 1; 
-            pointer-events: none; 
-        }
+        /* Sci-Fi Grid Background */
+        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
 
-        .content-layer {
-            position: relative;
-            z-index: 10;
-        }
+        .ui-layer { position: relative; z-index: 10; }
 
-        /* Navbar */
+        /* Navigation - Glassmorphism Sci-Fi */
         nav {
-            position: fixed; 
-            top: 0; 
-            width: 100%; 
-            display: flex; 
-            justify-content: space-between;
-            align-items: center; 
-            padding: 20px 5%; 
-            box-sizing: border-box; 
-            z-index: 1000;
-            background: linear-gradient(to bottom, rgba(13, 13, 26, 0.8), transparent);
-            border-bottom: 1px solid var(--light-grid);
-            text-shadow: 0 0 5px var(--quantum-blue);
+            position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between;
+            align-items: center; padding: 15px 5%; box-sizing: border-box; z-index: 1000;
+            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px);
+            border-bottom: 2px solid var(--soft-blue);
         }
         
-        .nav-logo img { 
-            height: clamp(60px, 15vw, 90px); 
-            filter: drop-shadow(0 0 15px var(--quantum-blue));
-        }
+        .nav-logo img { height: 75px; filter: drop-shadow(0 0 10px var(--sky-neon)); }
 
         .nav-links a { 
-            text-decoration: none; 
-            color: var(--quantum-blue); 
-            font-weight: 700; 
-            font-size: 1rem; 
-            letter-spacing: 2px; 
-            transition: 0.3s ease-in-out;
-        }
-        .nav-links a:hover { 
-            color: var(--quantum-purple); 
-            text-shadow: 0 0 20px var(--quantum-purple), 0 0 30px var(--quantum-purple);
+            text-decoration: none; color: var(--deep-blue); font-family: 'Syncopate', sans-serif;
+            font-weight: 700; font-size: 0.7rem; letter-spacing: 2px; transition: 0.3s;
         }
 
-        /* Hero */
+        /* Hero - Cyber Sky */
         .hero {
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center;
-            align-items: center; 
-            text-align: center;
+            height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center;
         }
 
         .hero-title { 
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(4rem, 18vw, 10rem); 
-            font-weight: 900; 
-            line-height: 0.8; 
-            margin: 0; 
-            text-transform: uppercase; 
-            background: linear-gradient(45deg, var(--quantum-blue), var(--quantum-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px var(--quantum-blue);
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(3rem, 12vw, 7rem); font-weight: 900; line-height: 0.9;
+            margin: 0; text-transform: uppercase;
+            background: linear-gradient(to bottom, var(--deep-blue), var(--sky-neon));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.3));
         }
 
-        .hero-subtitle { 
-            font-size: clamp(1rem, 4.5vw, 1.5rem); 
-            letter-spacing: clamp(8px, 3vw, 25px); 
-            margin-top: 25px; 
-            color: var(--quantum-purple);
-            text-shadow: 0 0 10px var(--quantum-purple);
+        /* Scanner Line Animation */
+        .scanner-line {
+            position: absolute; width: 100%; height: 2px; background: var(--sky-neon);
+            opacity: 0.2; box-shadow: 0 0 15px var(--sky-neon);
+            animation: scan 4s linear infinite; z-index: 5;
         }
 
-        /* Products */
+        @keyframes scan { 0% { top: 0; } 100% { top: 100vh; } }
+
+        /* Products - Neo Cards */
         .products { 
-            padding: 100px 5%; 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 50px; 
-            max-width: 1400px; 
-            margin: auto;
+            padding: 100px 5%; display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 40px; max-width: 1300px; margin: auto;
         }
 
-        .quantum-card {
-            background: rgba(0, 255, 255, 0.08); 
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--light-grid); 
-            padding: 30px; 
-            border-radius: 20px;
-            text-align: center; 
-            transition: 0.5s ease-in-out;
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.1);
-            position: relative; /* for glitch effect */
+        .neo-card {
+            background: rgba(255, 255, 255, 0.8); border: 1px solid var(--soft-blue);
+            padding: 20px; border-radius: 5px; position: relative;
+            overflow: hidden; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            clip-path: polygon(0 0, 90% 0, 100% 10%, 100% 100%, 10% 100%, 0 90%); /* Sci-Fi Cut */
         }
 
-        .quantum-card:hover { 
-            transform: scale(1.03) rotateZ(1deg); 
-            border-color: var(--quantum-purple);
-            box-shadow: 0 0 40px var(--quantum-purple), 0 0 60px rgba(138, 43, 226, 0.3);
+        .neo-card:hover { 
+            transform: translateY(-10px); 
+            border-color: var(--sky-neon);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
         }
 
-        .quantum-card img { 
-            width: 100%; 
-            border-radius: 15px; 
-            height: 380px; 
-            object-fit: cover; 
-            filter: brightness(0.8) contrast(1.2);
-            transition: 0.4s ease-in-out;
-        }
-        .quantum-card:hover img { filter: brightness(1.1) contrast(1); }
+        .neo-card img { width: 100%; height: 400px; object-fit: cover; border-bottom: 2px solid var(--soft-blue); }
 
         .btn-interact {
-            width: 100%; 
-            padding: 18px; 
-            background: var(--quantum-purple); 
-            color: var(--quantum-blue); 
-            border: 1px solid var(--quantum-blue);
-            border-radius: 50px; 
-            font-weight: 800; 
-            cursor: pointer; 
-            margin-top: 25px;
-            transition: 0.4s ease-in-out;
-            box-shadow: 0 0 15px var(--quantum-purple);
+            width: 100%; padding: 15px; background: transparent; 
+            border: 1px solid var(--deep-blue); color: var(--deep-blue);
+            font-family: 'Syncopate', sans-serif; font-size: 0.7rem; font-weight: 900;
+            cursor: pointer; margin-top: 20px; transition: 0.3s;
+            position: relative; overflow: hidden;
         }
-        .btn-interact:hover { 
-            background: var(--quantum-blue); 
-            color: var(--dark-space); 
-            border-color: var(--quantum-purple);
-            box-shadow: 0 0 30px var(--quantum-blue);
-            transform: scale(1.02);
-        }
+
+        .btn-interact:hover { background: var(--deep-blue); color: white; box-shadow: 0 0 20px var(--sky-neon); }
 
         /* Footer */
-        footer { padding: 60px; text-align: center; color: var(--light-grid); font-size: 0.9rem; letter-spacing: 1px; }
-
-        /* Glitch Effect CSS */
-        .glitch-text {
-            position: relative;
-            display: inline-block;
-        }
-
-        .glitch-text::before,
-        .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--dark-space);
-            overflow: hidden;
-            top: 0;
-        }
-
-        .glitch-text::before {
-            left: 2px;
-            text-shadow: -2px 0 var(--quantum-blue);
-            animation: glitch-anim-1 2s infinite linear alternate-reverse;
-        }
-
-        .glitch-text::after {
-            left: -2px;
-            text-shadow: -2px 0 var(--quantum-purple);
-            animation: glitch-anim-2 2s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitch-anim-1 {
-            0% { clip: rect(20px, 9999px, 80px, 0); }
-            10% { clip: rect(100px, 9999px, 10px, 0); }
-            20% { clip: rect(70px, 9999px, 120px, 0); }
-            30% { clip: rect(10px, 9999px, 40px, 0); }
-            40% { clip: rect(110px, 9999px, 70px, 0); }
-            50% { clip: rect(50px, 9999px, 90px, 0); }
-            60% { clip: rect(80px, 9999px, 20px, 0); }
-            70% { clip: rect(30px, 9999px, 110px, 0); }
-            80% { clip: rect(120px, 9999px, 50px, 0); }
-            90% { clip: rect(60px, 9999px, 100px, 0); }
-            100% { clip: rect(90px, 9999px, 30px, 0); }
-        }
-
-        @keyframes glitch-anim-2 {
-            0% { clip: rect(10px, 9999px, 110px, 0); }
-            10% { clip: rect(120px, 9999px, 50px, 0); }
-            20% { clip: rect(40px, 9999px, 100px, 0); }
-            30% { clip: rect(90px, 9999px, 30px, 0); }
-            40% { clip: rect(20px, 9999px, 80px, 0); }
-            50% { clip: rect(100px, 9999px, 10px, 0); }
-            60% { clip: rect(70px, 9999px, 120px, 0); }
-            70% { clip: rect(10px, 9999px, 40px, 0); }
-            80% { clip: rect(110px, 9999px, 70px, 0); }
-            90% { clip: rect(50px, 9999px, 90px, 0); }
-            100% { clip: rect(80px, 9999px, 20px, 0); }
-        }
+        footer { padding: 40px; text-align: center; font-size: 0.6rem; letter-spacing: 5px; font-family: 'Syncopate'; opacity: 0.5; }
     </style>
 </head>
 <body>
 
+    <div class="scanner-line"></div>
+
     <nav>
-        <div class="nav-logo">
-            <img src="assets/logo.jpg" onerror="this.src='assets/logo.png'" alt="Siya Store">
-        </div>
-        <div class="nav-links">
-            <a href="#shop">STORE</a>
-            <a href="#">NOTI WORLD</a>
-        </div>
+        <div class="nav-logo"><img src="assets/logo.jpg" onerror="this.src='assets/logo.png'" alt="Siya Store"></div>
+        <div class="nav-links"><a href="#shop">PROXIMITY_STORE</a></div>
     </nav>
 
-    <div class="content-layer">
+    <div class="ui-layer">
         <section class="hero">
-            <h1 class="hero-title glitch-text" data-text="QUANTUM">QUANTUM<br><span style="color: transparent; -webkit-text-stroke: 2px var(--quantum-blue);">REALITY</span></h1>
-            <p class="hero-subtitle">EXPERIENCE THE FUTURE</p>
+            <h1 class="hero-title">NEO<br>VISION</h1>
+            <p style="letter-spacing: 10px; font-weight: 200;">SIYA STORE x NOTI DIGITAL</p>
         </section>
 
         <section class="products" id="shop">
-            <div class="quantum-card">
-                <img src="https://images.unsplash.com/photo-1509343256512-d771b32560d2?q=80&w=1000" alt="Item">
-                <h2>NEBULA SHARD</h2>
-                <p>$499.00</p>
-                <button class="btn-interact">ACCESS</button>
+            <div class="neo-card" onclick="ripple(event)">
+                <img src="https://images.unsplash.com/photo-1614728263952-84ea206f99b6?q=80&w=1000" alt="Noti Art">
+                <h3>VIRTUAL_DATA_01</h3>
+                <p>$320.00</p>
+                <button class="btn-interact">INITIALIZE_PURCHASE</button>
             </div>
-            <div class="quantum-card">
-                <img src="https://images.unsplash.com/photo-1614728286940-b88325a74d28?q=80&w=1000" alt="Item">
-                <h2>VOID ECHO</h2>
-                <p>$780.00</p>
-                <button class="btn-interact">ACCESS</button>
+            <div class="neo-card" onclick="ripple(event)">
+                <img src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1000" alt="Noti Art">
+                <h3>AETHER_FRAME</h3>
+                <p>$580.00</p>
+                <button class="btn-interact">INITIALIZE_PURCHASE</button>
             </div>
         </section>
-
-        <footer>SIYA STORE // QUANTUM DIVISION // NOTI A.I.</footer>
     </div>
 
+    <footer>ACCESSING SIYA_DATABASE 2.0 // BY NOTI</footer>
+
     <script>
-        // --- 3D Background: Holographic Grid & Particles ---
+        // --- 3D Grid & Clouds ---
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         document.body.appendChild(renderer.domElement);
 
-        // Holographic Grid
-        const gridHelper = new THREE.GridHelper(20, 20, var_quantum_blue, var_quantum_purple);
-        gridHelper.material.opacity = 0.3;
-        gridHelper.material.transparent = true;
-        scene.add(gridHelper);
+        // Infinite Sci-Fi Grid
+        const grid = new THREE.GridHelper(100, 50, 0x00d4ff, 0xe1f5fe);
+        grid.position.y = -2;
+        grid.material.opacity = 0.2;
+        grid.material.transparent = true;
+        scene.add(grid);
 
-        // Dynamic Particles
-        const particleGeometry = new THREE.BufferGeometry();
-        const particleCount = 2000;
-        const posArray = new Float32Array(particleCount * 3);
-        for(let i=0; i < particleCount * 3; i++) {
-            posArray[i] = (Math.random() - 0.5) * 20;
-        }
-        particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        const particleMaterial = new THREE.PointsMaterial({ 
-            size: 0.05, 
-            color: var_quantum_blue, 
-            transparent: true, 
-            opacity: 0.6 
-        });
-        const particles = new THREE.Points(particleGeometry, particleMaterial);
-        scene.add(particles);
+        camera.position.z = 5;
+        camera.position.y = 1;
 
-        // Light
-        scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-        const pointLight = new THREE.PointLight(var_quantum_blue, 1, 100);
-        pointLight.position.set(0, 0, 5);
-        scene.add(pointLight);
-
-        camera.position.z = 8;
-        camera.position.y = 2; // Look down slightly at the grid
-
-        // --- Interaction Effects ---
-
-        // Universal Click Ripple Effect
-        document.addEventListener('click', (e) => {
-            const ripple = document.createElement('div');
-            ripple.style.cssText = `
-                position: fixed; 
-                left: ${e.clientX}px; 
-                top: ${e.clientY}px; 
-                background: radial-gradient(circle at center, var(--quantum-purple) 0%, rgba(0,0,0,0) 70%);
-                width: 5px; height: 5px; border-radius: 50%; 
-                pointer-events: none; z-index: 9999;
+        // --- Visual Effects ---
+        
+        // Ripple Effect on Click
+        function ripple(e) {
+            const circle = document.createElement('div');
+            circle.style.cssText = `
+                position: fixed; top: ${e.clientY}px; left: ${e.clientX}px;
+                width: 10px; height: 10px; border: 2px solid var(--sky-neon);
+                border-radius: 50%; pointer-events: none; z-index: 9999;
                 transform: translate(-50%, -50%);
             `;
-            document.body.appendChild(ripple);
-            gsap.to(ripple, {
-                scale: 100, 
-                opacity: 0, 
-                duration: 0.8, 
-                ease: "power2.out", 
-                onComplete: () => ripple.remove()
-            });
+            document.body.appendChild(circle);
+            gsap.to(circle, { scale: 20, opacity: 0, duration: 0.6, onComplete: () => circle.remove() });
+        }
+
+        // Mouse Move Influence
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+            gsap.to(camera.rotation, { y: -x * 0.1, x: -y * 0.1, duration: 1 });
         });
 
-        // Button Glitch Effect
-        document.querySelectorAll('.btn-interact').forEach(button => {
-            button.addEventListener('click', (e) => {
-                anime({
-                    targets: e.target,
-                    backgroundColor: [var_quantum_purple, var_quantum_blue, var_quantum_purple],
-                    duration: 200,
-                    easing: 'linear',
-                    loop: 3,
-                    direction: 'alternate'
-                });
-
-                // Add text glitch temporarily
-                const originalText = e.target.innerText;
-                e.target.innerText = '>> ACCESSING_';
-                setTimeout(() => {
-                    e.target.innerText = originalText;
-                }, 600);
-            });
-        });
-
-        // --- Animations ---
         function animate() {
             requestAnimationFrame(animate);
-
-            // Camera movement (subtle hover)
-            camera.position.x = Math.sin(Date.now() * 0.0001) * 0.5;
-            camera.position.z = 8 + Math.cos(Date.now() * 0.0002) * 0.5;
-
-            // Particle movement
-            particles.rotation.y += 0.0005;
-            particles.rotation.x += 0.0002;
-
+            grid.position.z += 0.05; // Moving Grid Effect
+            if(grid.position.z > 2) grid.position.z = 0;
             renderer.render(scene, camera);
         }
         animate();
 
         window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
 </body>
