@@ -4,183 +4,160 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Siya Store | Noti Universe</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --sky-blue: #a5d8ff;
             --y2k-blue: #74c0fc;
             --deep-blue: #1c7ed6;
-            --white: #ffffff;
         }
 
-        body { 
-            margin: 0; background: var(--white); 
-            font-family: 'Outfit', sans-serif; overflow: hidden;
-            color: var(--deep-blue);
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, #f0f8ff, #ffffff);
+            font-family: 'Outfit', sans-serif; overflow-x: hidden;
         }
 
-        /* الطبقة الخلفية للنجوم والغيوم */
-        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
+        /* --- خلفية الغيوم المتحركة --- */
+        .cloud-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none; opacity: 0.6;
+        }
 
-        /* حاوية المحتوى */
-        .ui-content { position: relative; z-index: 10; height: 100vh; overflow-y: auto; }
+        .cloud {
+            position: absolute; background: white; border-radius: 100px;
+            filter: blur(50px); animation: move var(--d) linear infinite;
+        }
 
-        /* Navbar الفخمة */
+        @keyframes move {
+            from { transform: translateX(-200px); }
+            to { transform: translateX(110vw); }
+        }
+
+        /* --- النجوم Y2K الزرقاء --- */
+        .star {
+            position: absolute; color: var(--y2k-blue);
+            font-size: 20px; z-index: 2; opacity: 0;
+            animation: blink 2s infinite ease-in-out;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+        }
+
+        /* --- المحتوى --- */
+        .content { position: relative; z-index: 10; }
+
         nav {
-            position: sticky; top: 0; width: 100%; display: flex; justify-content: space-between;
-            align-items: center; padding: 15px 5%; box-sizing: border-box; z-index: 1000;
-            background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(12px);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 5%; background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px); border-bottom: 1px solid var(--sky-blue);
         }
-        
-        .nav-logo img { height: 75px; filter: drop-shadow(0 0 10px var(--sky-blue)); }
 
-        /* Hero Section */
+        .nav-logo img { height: 80px; filter: drop-shadow(0 0 10px var(--sky-blue)); }
+
         .hero {
-            height: 80vh; display: flex; flex-direction: column; justify-content: center;
-            align-items: center; text-align: center;
+            height: 70vh; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; text-align: center;
         }
 
         .hero h1 { 
-            font-size: clamp(3.5rem, 12vw, 8rem); font-weight: 900; margin: 0;
-            background: linear-gradient(to bottom, var(--deep-blue), var(--sky-blue));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: clamp(3rem, 10vw, 7rem); font-weight: 900; color: var(--deep-blue);
+            margin: 0; text-shadow: 0 10px 20px rgba(116, 192, 252, 0.2);
         }
 
-        /* Products Grid */
         .products { 
-            padding: 50px 5%; display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 30px; max-width: 1200px; margin: auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px; padding: 50px 5%; max-width: 1200px; margin: auto;
         }
 
-        .y2k-card {
-            background: rgba(255, 255, 255, 0.7); border: 1.5px solid var(--sky-blue);
-            padding: 20px; border-radius: 35px; text-align: center;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer; position: relative; overflow: hidden;
+        .card {
+            background: rgba(255, 255, 255, 0.8); border: 2px solid var(--sky-blue);
+            border-radius: 30px; padding: 20px; text-align: center;
+            transition: 0.3s ease; cursor: pointer;
         }
 
-        .y2k-card:hover { 
-            transform: scale(1.03); border-color: var(--deep-blue);
-            box-shadow: 0 15px 40px rgba(116, 192, 252, 0.2);
-        }
+        .card:hover { transform: translateY(-10px); border-color: var(--deep-blue); }
 
-        .y2k-card img { width: 100%; border-radius: 25px; margin-bottom: 15px; }
+        .card img { width: 100%; border-radius: 20px; }
 
-        .btn-buy {
-            padding: 12px 30px; background: var(--deep-blue); color: white;
-            border: none; border-radius: 50px; font-weight: 700; cursor: pointer;
-        }
-
-        /* Custom Cursor */
-        #magic-cursor {
-            position: fixed; width: 25px; height: 25px; border: 2px solid var(--y2k-blue);
-            border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+        .btn {
+            margin-top: 15px; padding: 12px 25px; background: var(--deep-blue);
+            color: white; border: none; border-radius: 50px; font-weight: 700;
         }
     </style>
 </head>
 <body>
 
-    <div id="magic-cursor"></div>
+    <div class="cloud-bg" id="clouds"></div>
 
-    <div class="ui-content">
+    <div class="content">
         <nav>
-            <div class="nav-logo"><img src="assets/logo.jpg" onerror="this.src='assets/logo.png'" alt="Siya Store"></div>
-            <div style="font-weight: 900; color: var(--y2k-blue);">ARCHIVE 2.0</div>
+            <div class="nav-logo"><img src="assets/logo.jpg" onerror="this.src='assets/logo.png'" alt="Logo"></div>
+            <div style="font-weight: 900; color: var(--deep-blue);">Y2K EDITION</div>
         </nav>
 
         <section class="hero">
-            <h1 onclick="spawnStars(event)">SIYA STORE</h1>
-            <p style="letter-spacing: 8px; font-weight: 300;">CURATED BY NOTI</p>
+            <h1>SIYA STORE</h1>
+            <p style="letter-spacing: 5px;">CLOUDS & STARS UNIVERSE</p>
         </section>
 
         <section class="products">
-            <div class="y2k-card" onclick="spawnStars(event)">
+            <div class="card" onclick="starEffect(event)">
                 <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000">
-                <h3>AERO PIECE #01</h3>
-                <button class="btn-buy">COLLECT</button>
+                <h3>NEO CLOUD 01</h3>
+                <button class="btn">ACCESS</button>
             </div>
-            <div class="y2k-card" onclick="spawnStars(event)">
+            <div class="card" onclick="starEffect(event)">
                 <img src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1000">
-                <h3>NEO CLOUD #02</h3>
-                <button class="btn-buy">COLLECT</button>
+                <h3>SKY DREAM 02</h3>
+                <button class="btn">ACCESS</button>
             </div>
         </section>
     </div>
 
     <script>
-        // --- 1. الماوس السحري ---
-        const cursor = document.getElementById('magic-cursor');
-        document.addEventListener('mousemove', (e) => {
-            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.15 });
-        });
+        // --- توليد الغيوم البيضاء ---
+        const cloudContainer = document.getElementById('clouds');
+        for (let i = 0; i < 8; i++) {
+            const cloud = document.createElement('div');
+            cloud.className = 'cloud';
+            const size = Math.random() * 200 + 150;
+            cloud.style.width = size + 'px';
+            cloud.style.height = (size * 0.6) + 'px';
+            cloud.style.top = Math.random() * 80 + 'vh';
+            cloud.style.left = Math.random() * 100 + 'vw';
+            cloud.style.setProperty('--d', (Math.random() * 20 + 20) + 's');
+            cloudContainer.appendChild(cloud);
+        }
 
-        // --- 2. تأثير انفجار النجوم عند الضغط ---
-        function spawnStars(e) {
-            for(let i=0; i<10; i++) {
-                const star = document.createElement('div');
-                star.innerHTML = '✦'; // نجمة Y2K
-                star.style.cssText = `
-                    position: fixed; left: ${e.clientX}px; top: ${e.clientY}px;
-                    color: var(--y2k-blue); font-size: 20px; z-index: 2000; pointer-events: none;
-                `;
-                document.body.appendChild(star);
-                gsap.to(star, {
-                    x: e.clientX + (Math.random()-0.5)*200,
-                    y: e.clientY + (Math.random()-0.5)*200,
-                    opacity: 0, scale: 0, duration: 1, onComplete: () => star.remove()
+        // --- توليد النجوم الزرقاء Y2K ---
+        for (let i = 0; i < 40; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.innerHTML = '✦'; 
+            star.style.top = Math.random() * 100 + 'vh';
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(star);
+        }
+
+        // --- تأثير الضغط (انفجار نجوم) ---
+        function starEffect(e) {
+            for(let i=0; i<8; i++) {
+                const s = document.createElement('div');
+                s.innerHTML = '✦';
+                s.style.cssText = `position:fixed; left:${e.clientX}px; top:${e.clientY}px; color:var(--y2k-blue); z-index:2000; font-size:25px; pointer-events:none;`;
+                document.body.appendChild(s);
+                gsap.to(s, {
+                    x: (Math.random()-0.5)*200, y: (Math.random()-0.5)*200,
+                    opacity: 0, rotation: 360, duration: 1, onComplete: () => s.remove()
                 });
             }
         }
-
-        // --- 3. خلفية الغيوم والنجوم (Three.js) ---
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-
-        // غيوم بيضاء ناعمة
-        const clouds = [];
-        const cloudGeom = new THREE.SphereGeometry(1.5, 32, 32);
-        for(let i=0; i<15; i++) {
-            const cloudMat = new THREE.MeshPhongMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 });
-            const cloud = new THREE.Mesh(cloudGeom, cloudMat);
-            cloud.position.set((Math.random()-0.5)*20, (Math.random()-0.5)*15, (Math.random()-0.5)*10);
-            scene.add(cloud);
-            clouds.push(cloud);
-        }
-
-        // نجوم زرقاء ثابتة كتحرك ببطء
-        const starGeom = new THREE.BufferGeometry();
-        const starCount = 400;
-        const posArray = new Float32Array(starCount * 3);
-        for(let i=0; i<starCount*3; i++) posArray[i] = (Math.random()-0.5)*30;
-        starGeom.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        const starMat = new THREE.PointsMaterial({ size: 0.05, color: 0x74c0fc });
-        const starField = new THREE.Points(starGeom, starMat);
-        scene.add(starField);
-
-        scene.add(new THREE.AmbientLight(0xffffff, 1));
-        camera.position.z = 8;
-
-        // تحكم في الكاميرا بالماوس
-        document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth - 0.5) * 2;
-            const y = (e.clientY / window.innerHeight - 0.5) * 2;
-            gsap.to(camera.position, { x: x*2, y: -y*2, duration: 2 });
-        });
-
-        function animate() {
-            requestAnimationFrame(animate);
-            clouds.forEach(c => c.rotation.y += 0.001);
-            starField.rotation.y += 0.0005;
-            renderer.render(scene, camera);
-        }
-        animate();
     </script>
 </body>
 </html>
