@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siya Store | Guide System</title>
+    <title>Siya Store | Official Universe</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --sky-blue: #a5d8ff;
             --y2k-blue: #74c0fc;
             --deep-blue: #1c7ed6;
+            --white: #ffffff;
         }
 
         body, html { 
@@ -20,119 +21,197 @@
             overflow-x: hidden;
         }
 
-        /* الغيوم والنجوم */
-        .cloud-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
-        .cloud { position: absolute; background: white; border-radius: 100px; filter: blur(40px); animation: move var(--d) linear infinite; opacity: 0.5; }
-        @keyframes move { from { transform: translateX(-200px); } to { transform: translateX(110vw); } }
-        .star { position: absolute; color: var(--y2k-blue); font-size: 18px; z-index: 6; animation: blink 2s infinite ease-in-out; }
-        @keyframes blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
-
-        /* --- Siya Character --- */
-        #siya-container {
-            position: fixed;
-            bottom: -500px; /* البداية تحت الشاشة */
-            right: 20px;
-            width: 250px;
-            z-index: 9999; /* رقم عالي جدا لضمان الظهور فوق الكل */
-            display: block !important;
-            transition: bottom 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* --- طبقة الغيوم والنجوم --- */
+        #sky-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
         }
 
-        #siya-container img {
-            width: 100%;
-            height: auto;
-            border: none;
-            outline: none;
+        .cloud {
+            position: absolute; background: white; border-radius: 100px;
+            filter: blur(45px); opacity: 0.6; z-index: 2;
+            animation: moveClouds var(--d) linear infinite;
         }
 
-        /* فقاعة الكلام */
+        @keyframes moveClouds {
+            from { transform: translateX(-300px); }
+            to { transform: translateX(110vw); }
+        }
+
+        .y2k-star {
+            position: absolute; color: var(--y2k-blue); font-size: 20px;
+            z-index: 3; animation: blinkStar 2s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes blinkStar {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+        }
+
+        /* --- شخصية Siya المرشدة --- */
+        #siya-guide-container {
+            position: fixed; bottom: -500px; right: 30px;
+            width: 250px; z-index: 9999;
+            transition: bottom 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; flex-direction: column; align-items: flex-end;
+        }
+
+        #siya-guide-container img {
+            width: 100%; height: auto;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
+        }
+
         .speech-bubble {
-            position: absolute;
-            bottom: 85%;
-            right: 20px;
-            width: 220px;
-            background: white;
-            border: 3px solid var(--y2k-blue);
-            padding: 15px;
-            border-radius: 25px 25px 0 25px;
-            font-size: 0.9rem;
-            font-weight: 900;
-            color: var(--deep-blue);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.4s ease;
-            z-index: 10000;
+            background: white; border: 3px solid var(--y2k-blue);
+            padding: 15px; border-radius: 20px 20px 0 20px;
+            font-size: 0.9rem; font-weight: 900; color: var(--deep-blue);
+            margin-bottom: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            opacity: 0; transform: scale(0.8); transition: 0.4s ease;
+            width: 200px; text-align: center;
         }
 
-        .show-bubble {
-            opacity: 1 !important;
-            transform: translateY(0) !important;
+        .bubble-active { opacity: 1; transform: scale(1); }
+
+        /* --- المحتوى الرئيسي --- */
+        .content { position: relative; z-index: 10; padding-top: 120px; }
+
+        nav {
+            position: fixed; top: 0; width: 100%; display: flex; 
+            justify-content: space-between; align-items: center;
+            padding: 15px 5%; box-sizing: border-box; z-index: 1000;
+            background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--sky-blue);
         }
 
-        /* المحتوى */
-        .main-ui { position: relative; z-index: 10; padding-top: 100px; text-align: center; }
-        nav { position: fixed; top: 0; width: 100%; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); z-index: 1000; padding: 20px 0; border-bottom: 2px solid var(--sky-blue); }
+        .nav-logo img { height: 70px; }
+
+        .hero { text-align: center; margin-bottom: 50px; }
+        .hero h1 { 
+            font-size: clamp(3rem, 12vw, 7rem); font-weight: 900; 
+            color: var(--deep-blue); margin: 0;
+            text-shadow: 0 5px 15px rgba(116, 192, 252, 0.3);
+        }
+
+        .products {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px; padding: 0 5% 100px; max-width: 1200px; margin: auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.8); border: 2px solid var(--sky-blue);
+            border-radius: 40px; padding: 25px; text-align: center;
+            transition: 0.4s ease; cursor: pointer;
+        }
+
+        .card:hover { transform: translateY(-15px); border-color: var(--deep-blue); }
+        .card img { width: 100%; border-radius: 30px; margin-bottom: 20px; }
+
+        /* تأثير النجوم عند الضغط */
+        .click-star {
+            position: fixed; pointer-events: none; z-index: 10000;
+            color: var(--y2k-blue); font-size: 24px;
+        }
     </style>
 </head>
-<body>
+<body onclick="createClickStar(event)">
 
-    <div class="cloud-bg" id="clouds"></div>
-
-    <div id="siya-container">
-        <div class="speech-bubble" id="bubble">Hello! I'm finally here! ✨</div>
-        <img src="siya.jpg" id="siya-img" alt="Siya Guide">
-    </div>
+    <div id="sky-canvas"></div>
 
     <nav>
-        <img src="assets/logo.jpg" onerror="this.src='assets/logo.png'" style="height: 60px;">
+        <div class="nav-logo"><img src="assets/logo.jpg" onerror="this.src='assets/logo.png'" alt="Logo"></div>
+        <div style="font-weight: 900; color: var(--deep-blue); letter-spacing: 2px;">NOTI ARCHIVE</div>
     </nav>
 
-    <div class="main-ui">
-        <h1 style="font-size: 4rem; color: var(--deep-blue);">SIYA STORE</h1>
-        <p>Interactive Shopping Experience</p>
+    <div id="siya-guide-container">
+        <div class="speech-bubble" id="siya-bubble">Welcome back! I'm Siya ✨</div>
+        <img src="siya.jpg" alt="Siya Guide" id="siya-img">
+    </div>
+
+    <div class="content">
+        <section class="hero">
+            <h1>SIYA STORE</h1>
+            <p style="letter-spacing: 10px; color: var(--y2k-blue); font-weight: 600;">NEW REALITY</p>
+        </section>
+
+        <section class="products">
+            <div class="card" onmouseover="siyaSpeak('This piece is magical! ✨')">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000">
+                <h3>AETHER PIECE</h3>
+            </div>
+            <div class="card" onmouseover="siyaSpeak('Ready to explore more?')">
+                <img src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1000">
+                <h3>NEO DREAM</h3>
+            </div>
+        </section>
     </div>
 
     <script>
-        const siyaBox = document.getElementById('siya-container');
-        const bubble = document.getElementById('bubble');
-        const img = document.getElementById('siya-img');
-
-        // 1. منطق الغيوم والنجوم
-        const cloudContainer = document.getElementById('clouds');
-        for (let i = 0; i < 6; i++) {
+        // 1. إنشاء الغيوم
+        const sky = document.getElementById('sky-canvas');
+        for (let i = 0; i < 10; i++) {
             const cloud = document.createElement('div');
             cloud.className = 'cloud';
-            const size = Math.random() * 200 + 150;
-            cloud.style.width = size + 'px'; cloud.style.height = (size * 0.6) + 'px';
-            cloud.style.top = Math.random() * 80 + 'vh'; cloud.style.left = Math.random() * 100 + 'vw';
-            cloud.style.setProperty('--d', (Math.random() * 20 + 20) + 's');
-            cloudContainer.appendChild(cloud);
+            const size = Math.random() * 250 + 150;
+            cloud.style.width = size + 'px';
+            cloud.style.height = (size * 0.6) + 'px';
+            cloud.style.top = Math.random() * 100 + 'vh';
+            cloud.style.left = Math.random() * -100 + 'px';
+            cloud.style.setProperty('--d', (Math.random() * 25 + 20) + 's');
+            sky.appendChild(cloud);
         }
 
-        // 2. إظهار Siya عند تحميل الصورة
-        img.onload = function() {
-            console.log("Image loaded successfully!");
+        // 2. إنشاء النجوم Y2K
+        for (let i = 0; i < 40; i++) {
+            const star = document.createElement('div');
+            star.className = 'y2k-star';
+            star.innerHTML = '✦';
+            star.style.top = Math.random() * 100 + 'vh';
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(star);
+        }
+
+        // 3. منطق المرشدة Siya
+        const siyaContainer = document.getElementById('siya-guide-container');
+        const bubble = document.getElementById('siya-bubble');
+        const siyaImg = document.getElementById('siya-img');
+
+        // تظهر الشخصية بمجرد تحميل الصورة أو بعد ثانية
+        window.addEventListener('load', () => {
             setTimeout(() => {
-                siyaBox.style.bottom = "0px"; // الشخصية كطلع
-                setTimeout(() => {
-                    speak("Welcome! Hover over items to chat!");
-                }, 1000);
-            }, 500);
-        };
+                siyaContainer.style.bottom = "0px";
+            }, 1000);
+        });
 
-        // في حالة فشل تحميل الصورة (الاحتياط)
-        img.onerror = function() {
-            console.error("Image NOT found! Please check if 'siya.jpg' is in the folder.");
-            alert("Warning: 'siya.jpg' not found in the root folder!");
-        };
-
-        function speak(text) {
+        function siyaSpeak(text) {
             bubble.innerText = text;
-            bubble.classList.add('show-bubble');
+            bubble.classList.add('bubble-active');
             setTimeout(() => {
-                bubble.classList.remove('show-bubble');
-            }, 5000);
+                bubble.classList.remove('bubble-active');
+            }, 4000);
+        }
+
+        // 4. تأثير النجوم عند الضغط في أي مكان
+        function createClickStar(e) {
+            for(let i=0; i<6; i++) {
+                const s = document.createElement('div');
+                s.className = 'click-star';
+                s.innerHTML = '✦';
+                s.style.left = e.clientX + 'px';
+                s.style.top = e.clientY + 'px';
+                document.body.appendChild(s);
+                
+                gsap.to(s, {
+                    x: (Math.random() - 0.5) * 200,
+                    y: (Math.random() - 0.5) * 200,
+                    opacity: 0,
+                    rotation: 360,
+                    scale: 0,
+                    duration: 1,
+                    onComplete: () => s.remove()
+                });
+            }
         }
     </script>
 </body>
