@@ -3,40 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siya Store | Official Noti</title>
+    <title>Siya Store | Quantum NOTI</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;400;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --sky-blue: #a5d8ff;
-            --main-blue: #74c0fc;
-            --deep-blue: #1c7ed6;
-            --white: #ffffff;
+            --quantum-blue: #00ffff; /* Cyber Blue */
+            --quantum-purple: #8a2be2; /* Electric Purple */
+            --dark-space: #0d0d1a;
+            --light-grid: rgba(0, 255, 255, 0.2);
         }
 
         body { 
             margin: 0; 
-            background: #e7f5ff; 
-            font-family: 'Outfit', sans-serif; 
-            overflow-x: hidden; 
-            color: var(--deep-blue);
+            background: var(--dark-space); 
+            font-family: 'Share Tech Mono', monospace; 
+            overflow: hidden; 
+            color: var(--quantum-blue);
         }
 
-        /* الطبقة السفلية للـ 3D */
         canvas { 
             position: fixed; 
             top: 0; 
             left: 0; 
-            z-index: 1; /* الـ 3D في الخلفية */
+            z-index: 1; 
             pointer-events: none; 
         }
 
-        /* الطبقة العلوية للمحتوى */
         .content-layer {
             position: relative;
-            z-index: 10; /* المحتوى فوق الـ 3D */
+            z-index: 10;
         }
 
         /* Navbar */
@@ -47,28 +46,30 @@
             display: flex; 
             justify-content: space-between;
             align-items: center; 
-            padding: 15px 5%; 
+            padding: 20px 5%; 
             box-sizing: border-box; 
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.7); 
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(116, 192, 252, 0.2);
+            background: linear-gradient(to bottom, rgba(13, 13, 26, 0.8), transparent);
+            border-bottom: 1px solid var(--light-grid);
+            text-shadow: 0 0 5px var(--quantum-blue);
         }
         
-        /* تثبيت اللوجو */
         .nav-logo img { 
-            height: clamp(55px, 12vw, 90px); 
-            width: auto;
-            filter: drop-shadow(0 0 10px rgba(116, 192, 252, 0.4));
-            display: block;
+            height: clamp(60px, 15vw, 90px); 
+            filter: drop-shadow(0 0 15px var(--quantum-blue));
         }
 
         .nav-links a { 
             text-decoration: none; 
-            color: var(--deep-blue); 
+            color: var(--quantum-blue); 
             font-weight: 700; 
-            font-size: 0.9rem; 
-            letter-spacing: 1px; 
+            font-size: 1rem; 
+            letter-spacing: 2px; 
+            transition: 0.3s ease-in-out;
+        }
+        .nav-links a:hover { 
+            color: var(--quantum-purple); 
+            text-shadow: 0 0 20px var(--quantum-purple), 0 0 30px var(--quantum-purple);
         }
 
         /* Hero */
@@ -82,18 +83,24 @@
         }
 
         .hero-title { 
-            font-size: clamp(3.5rem, 15vw, 8.5rem); 
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(4rem, 18vw, 10rem); 
             font-weight: 900; 
-            line-height: 0.85; 
+            line-height: 0.8; 
             margin: 0; 
             text-transform: uppercase; 
+            background: linear-gradient(45deg, var(--quantum-blue), var(--quantum-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px var(--quantum-blue);
         }
 
         .hero-subtitle { 
-            font-size: clamp(0.9rem, 4vw, 1.3rem); 
-            letter-spacing: clamp(5px, 2vw, 15px); 
-            margin-top: 20px; 
-            color: var(--main-blue);
+            font-size: clamp(1rem, 4.5vw, 1.5rem); 
+            letter-spacing: clamp(8px, 3vw, 25px); 
+            margin-top: 25px; 
+            color: var(--quantum-purple);
+            text-shadow: 0 0 10px var(--quantum-purple);
         }
 
         /* Products */
@@ -101,40 +108,119 @@
             padding: 100px 5%; 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 40px; 
-            max-width: 1200px; 
+            gap: 50px; 
+            max-width: 1400px; 
             margin: auto;
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.5); 
-            backdrop-filter: blur(15px);
-            border: 2px solid rgba(255, 255, 255, 0.6); 
-            padding: 25px; 
-            border-radius: 40px;
+        .quantum-card {
+            background: rgba(0, 255, 255, 0.08); 
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--light-grid); 
+            padding: 30px; 
+            border-radius: 20px;
             text-align: center; 
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: 0.5s ease-in-out;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.1);
+            position: relative; /* for glitch effect */
         }
 
-        .glass-card:hover { transform: translateY(-15px); }
+        .quantum-card:hover { 
+            transform: scale(1.03) rotateZ(1deg); 
+            border-color: var(--quantum-purple);
+            box-shadow: 0 0 40px var(--quantum-purple), 0 0 60px rgba(138, 43, 226, 0.3);
+        }
 
-        .glass-card img { 
+        .quantum-card img { 
             width: 100%; 
-            border-radius: 30px; 
-            height: 350px; 
+            border-radius: 15px; 
+            height: 380px; 
             object-fit: cover; 
+            filter: brightness(0.8) contrast(1.2);
+            transition: 0.4s ease-in-out;
         }
+        .quantum-card:hover img { filter: brightness(1.1) contrast(1); }
 
-        .btn-buy {
+        .btn-interact {
             width: 100%; 
             padding: 18px; 
-            background: var(--deep-blue); 
-            color: white; 
-            border: none;
+            background: var(--quantum-purple); 
+            color: var(--quantum-blue); 
+            border: 1px solid var(--quantum-blue);
             border-radius: 50px; 
             font-weight: 800; 
             cursor: pointer; 
-            margin-top: 20px;
+            margin-top: 25px;
+            transition: 0.4s ease-in-out;
+            box-shadow: 0 0 15px var(--quantum-purple);
+        }
+        .btn-interact:hover { 
+            background: var(--quantum-blue); 
+            color: var(--dark-space); 
+            border-color: var(--quantum-purple);
+            box-shadow: 0 0 30px var(--quantum-blue);
+            transform: scale(1.02);
+        }
+
+        /* Footer */
+        footer { padding: 60px; text-align: center; color: var(--light-grid); font-size: 0.9rem; letter-spacing: 1px; }
+
+        /* Glitch Effect CSS */
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-space);
+            overflow: hidden;
+            top: 0;
+        }
+
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--quantum-blue);
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--quantum-purple);
+            animation: glitch-anim-2 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(20px, 9999px, 80px, 0); }
+            10% { clip: rect(100px, 9999px, 10px, 0); }
+            20% { clip: rect(70px, 9999px, 120px, 0); }
+            30% { clip: rect(10px, 9999px, 40px, 0); }
+            40% { clip: rect(110px, 9999px, 70px, 0); }
+            50% { clip: rect(50px, 9999px, 90px, 0); }
+            60% { clip: rect(80px, 9999px, 20px, 0); }
+            70% { clip: rect(30px, 9999px, 110px, 0); }
+            80% { clip: rect(120px, 9999px, 50px, 0); }
+            90% { clip: rect(60px, 9999px, 100px, 0); }
+            100% { clip: rect(90px, 9999px, 30px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(10px, 9999px, 110px, 0); }
+            10% { clip: rect(120px, 9999px, 50px, 0); }
+            20% { clip: rect(40px, 9999px, 100px, 0); }
+            30% { clip: rect(90px, 9999px, 30px, 0); }
+            40% { clip: rect(20px, 9999px, 80px, 0); }
+            50% { clip: rect(100px, 9999px, 10px, 0); }
+            60% { clip: rect(70px, 9999px, 120px, 0); }
+            70% { clip: rect(10px, 9999px, 40px, 0); }
+            80% { clip: rect(110px, 9999px, 70px, 0); }
+            90% { clip: rect(50px, 9999px, 90px, 0); }
+            100% { clip: rect(80px, 9999px, 20px, 0); }
         }
     </style>
 </head>
@@ -145,75 +231,139 @@
             <img src="assets/logo.jpg" onerror="this.src='assets/logo.png'" alt="Siya Store">
         </div>
         <div class="nav-links">
-            <a href="#shop">COLLECTION</a>
+            <a href="#shop">STORE</a>
+            <a href="#">NOTI WORLD</a>
         </div>
     </nav>
 
     <div class="content-layer">
         <section class="hero">
-            <h1 class="hero-title">SIYA<br><span style="color: white; -webkit-text-stroke: 2px var(--deep-blue);">STORE</span></h1>
-            <p class="hero-subtitle">FEATURING NOTI</p>
+            <h1 class="hero-title glitch-text" data-text="QUANTUM">QUANTUM<br><span style="color: transparent; -webkit-text-stroke: 2px var(--quantum-blue);">REALITY</span></h1>
+            <p class="hero-subtitle">EXPERIENCE THE FUTURE</p>
         </section>
 
         <section class="products" id="shop">
-            <div class="glass-card">
-                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000" alt="Art">
-                <h2>Cloud Piece #01</h2>
-                <p>$240.00</p>
-                <button class="btn-buy" onclick="stars(event)">PURCHASE</button>
+            <div class="quantum-card">
+                <img src="https://images.unsplash.com/photo-1509343256512-d771b32560d2?q=80&w=1000" alt="Item">
+                <h2>NEBULA SHARD</h2>
+                <p>$499.00</p>
+                <button class="btn-interact">ACCESS</button>
             </div>
-            <div class="glass-card">
-                <img src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1000" alt="Art">
-                <h2>Sky Essence</h2>
-                <p>$450.00</p>
-                <button class="btn-buy" onclick="stars(event)">PURCHASE</button>
+            <div class="quantum-card">
+                <img src="https://images.unsplash.com/photo-1614728286940-b88325a74d28?q=80&w=1000" alt="Item">
+                <h2>VOID ECHO</h2>
+                <p>$780.00</p>
+                <button class="btn-interact">ACCESS</button>
             </div>
         </section>
+
+        <footer>SIYA STORE // QUANTUM DIVISION // NOTI A.I.</footer>
     </div>
 
     <script>
-        // تأثير النجوم
-        function stars(e) {
-            for(let i=0; i<10; i++) {
-                const s = document.createElement('div');
-                s.innerHTML = '✦';
-                s.style.cssText = `position:fixed; left:${e.clientX}px; top:${e.clientY}px; color:#74c0fc; z-index:2000;`;
-                document.body.appendChild(s);
-                gsap.to(s, {x:(Math.random()-0.5)*100, y:(Math.random()-0.5)*100, opacity:0, duration:1, onComplete:()=>s.remove()});
-            }
-        }
-
-        // 3D Scene
+        // --- 3D Background: Holographic Grid & Particles ---
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         document.body.appendChild(renderer.domElement);
 
-        const bubbles = [];
-        const geom = new THREE.SphereGeometry(0.4, 24, 24);
-        for(let i=0; i<40; i++) {
-            const mat = new THREE.MeshPhongMaterial({ color: 0x74c0fc, transparent: true, opacity: 0.3 });
-            const b = new THREE.Mesh(geom, mat);
-            b.position.set((Math.random()-0.5)*15, (Math.random()-0.5)*15, (Math.random()-0.5)*15);
-            scene.add(b);
-            bubbles.push(b);
+        // Holographic Grid
+        const gridHelper = new THREE.GridHelper(20, 20, var_quantum_blue, var_quantum_purple);
+        gridHelper.material.opacity = 0.3;
+        gridHelper.material.transparent = true;
+        scene.add(gridHelper);
+
+        // Dynamic Particles
+        const particleGeometry = new THREE.BufferGeometry();
+        const particleCount = 2000;
+        const posArray = new Float32Array(particleCount * 3);
+        for(let i=0; i < particleCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 20;
         }
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particleMaterial = new THREE.PointsMaterial({ 
+            size: 0.05, 
+            color: var_quantum_blue, 
+            transparent: true, 
+            opacity: 0.6 
+        });
+        const particles = new THREE.Points(particleGeometry, particleMaterial);
+        scene.add(particles);
 
-        scene.add(new THREE.AmbientLight(0xffffff, 1));
-        camera.position.z = 6;
+        // Light
+        scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+        const pointLight = new THREE.PointLight(var_quantum_blue, 1, 100);
+        pointLight.position.set(0, 0, 5);
+        scene.add(pointLight);
 
+        camera.position.z = 8;
+        camera.position.y = 2; // Look down slightly at the grid
+
+        // --- Interaction Effects ---
+
+        // Universal Click Ripple Effect
+        document.addEventListener('click', (e) => {
+            const ripple = document.createElement('div');
+            ripple.style.cssText = `
+                position: fixed; 
+                left: ${e.clientX}px; 
+                top: ${e.clientY}px; 
+                background: radial-gradient(circle at center, var(--quantum-purple) 0%, rgba(0,0,0,0) 70%);
+                width: 5px; height: 5px; border-radius: 50%; 
+                pointer-events: none; z-index: 9999;
+                transform: translate(-50%, -50%);
+            `;
+            document.body.appendChild(ripple);
+            gsap.to(ripple, {
+                scale: 100, 
+                opacity: 0, 
+                duration: 0.8, 
+                ease: "power2.out", 
+                onComplete: () => ripple.remove()
+            });
+        });
+
+        // Button Glitch Effect
+        document.querySelectorAll('.btn-interact').forEach(button => {
+            button.addEventListener('click', (e) => {
+                anime({
+                    targets: e.target,
+                    backgroundColor: [var_quantum_purple, var_quantum_blue, var_quantum_purple],
+                    duration: 200,
+                    easing: 'linear',
+                    loop: 3,
+                    direction: 'alternate'
+                });
+
+                // Add text glitch temporarily
+                const originalText = e.target.innerText;
+                e.target.innerText = '>> ACCESSING_';
+                setTimeout(() => {
+                    e.target.innerText = originalText;
+                }, 600);
+            });
+        });
+
+        // --- Animations ---
         function animate() {
             requestAnimationFrame(animate);
-            bubbles.forEach(b => {
-                b.position.y += Math.sin(Date.now()*0.001 + b.position.x)*0.005;
-            });
+
+            // Camera movement (subtle hover)
+            camera.position.x = Math.sin(Date.now() * 0.0001) * 0.5;
+            camera.position.z = 8 + Math.cos(Date.now() * 0.0002) * 0.5;
+
+            // Particle movement
+            particles.rotation.y += 0.0005;
+            particles.rotation.x += 0.0002;
+
             renderer.render(scene, camera);
         }
         animate();
 
         window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth/window.innerHeight;
+            camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
