@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siya Store | Noti Universe</title>
+    <title>Siya Store | Your AI Guide</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;900&display=swap" rel="stylesheet">
     
@@ -20,143 +20,121 @@
             font-family: 'Outfit', sans-serif; overflow-x: hidden;
         }
 
-        /* --- خلفية الغيوم المتحركة --- */
-        .cloud-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; pointer-events: none; opacity: 0.6;
-        }
+        /* --- خلفية الغيوم والنجوم (بقت كما هي) --- */
+        .cloud-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0.6; }
+        .cloud { position: absolute; background: white; border-radius: 100px; filter: blur(50px); animation: move var(--d) linear infinite; }
+        @keyframes move { from { transform: translateX(-200px); } to { transform: translateX(110vw); } }
+        .star { position: absolute; color: var(--y2k-blue); font-size: 20px; z-index: 2; animation: blink 2s infinite ease-in-out; }
+        @keyframes blink { 0%, 100% { opacity: 0; transform: scale(0.5); } 50% { opacity: 1; transform: scale(1.2); } }
 
-        .cloud {
-            position: absolute; background: white; border-radius: 100px;
-            filter: blur(50px); animation: move var(--d) linear infinite;
+        /* --- مرشدة الموقع Siya --- */
+        #siya-guide {
+            position: fixed; bottom: -300px; right: 20px; width: 220px;
+            z-index: 2000; transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
         }
+        #siya-guide img { width: 100%; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); }
 
-        @keyframes move {
-            from { transform: translateX(-200px); }
-            to { transform: translateX(110vw); }
-        }
-
-        /* --- النجوم Y2K الزرقاء --- */
-        .star {
-            position: absolute; color: var(--y2k-blue);
-            font-size: 20px; z-index: 2; opacity: 0;
-            animation: blink 2s infinite ease-in-out;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+        .bubble {
+            position: absolute; bottom: 250px; right: 50px; width: 200px;
+            background: white; border: 2px solid var(--y2k-blue);
+            padding: 15px; border-radius: 20px 20px 0 20px;
+            font-size: 0.85rem; font-weight: 600; color: var(--deep-blue);
+            box-shadow: 0 5px 15px rgba(116, 192, 252, 0.2);
+            opacity: 0; transform: scale(0); transition: 0.4s ease;
         }
 
         /* --- المحتوى --- */
         .content { position: relative; z-index: 10; }
-
-        nav {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 5%; background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px); border-bottom: 1px solid var(--sky-blue);
-        }
-
-        .nav-logo img { height: 80px; filter: drop-shadow(0 0 10px var(--sky-blue)); }
-
-        .hero {
-            height: 70vh; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; text-align: center;
-        }
-
-        .hero h1 { 
-            font-size: clamp(3rem, 10vw, 7rem); font-weight: 900; color: var(--deep-blue);
-            margin: 0; text-shadow: 0 10px 20px rgba(116, 192, 252, 0.2);
-        }
-
-        .products { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px; padding: 50px 5%; max-width: 1200px; margin: auto;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.8); border: 2px solid var(--sky-blue);
-            border-radius: 30px; padding: 20px; text-align: center;
-            transition: 0.3s ease; cursor: pointer;
-        }
-
-        .card:hover { transform: translateY(-10px); border-color: var(--deep-blue); }
-
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(10px); }
+        .nav-logo img { height: 80px; }
+        .hero { height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .hero h1 { font-size: clamp(3rem, 10vw, 6rem); font-weight: 900; color: var(--deep-blue); margin: 0; }
+        
+        .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; padding: 50px 5%; max-width: 1200px; margin: auto; }
+        .card { background: rgba(255, 255, 255, 0.8); border: 2px solid var(--sky-blue); border-radius: 30px; padding: 20px; text-align: center; transition: 0.3s ease; }
+        .card:hover { transform: translateY(-10px); }
         .card img { width: 100%; border-radius: 20px; }
-
-        .btn {
-            margin-top: 15px; padding: 12px 25px; background: var(--deep-blue);
-            color: white; border: none; border-radius: 50px; font-weight: 700;
-        }
     </style>
 </head>
 <body>
 
     <div class="cloud-bg" id="clouds"></div>
 
+    <div id="siya-guide">
+        <div class="bubble" id="siya-bubble">Welcome to my universe! ✨</div>
+        <img src="siya.jpg" alt="Siya Guide">
+    </div>
+
     <div class="content">
         <nav>
             <div class="nav-logo"><img src="assets/logo.jpg" onerror="this.src='assets/logo.png'" alt="Logo"></div>
-            <div style="font-weight: 900; color: var(--deep-blue);">Y2K EDITION</div>
+            <div style="font-weight: 900; color: var(--deep-blue);">SIYA AI INTERFACE</div>
         </nav>
 
         <section class="hero">
             <h1>SIYA STORE</h1>
-            <p style="letter-spacing: 5px;">CLOUDS & STARS UNIVERSE</p>
+            <p style="letter-spacing: 5px;">GUIDED BY SIYA AI</p>
         </section>
 
         <section class="products">
-            <div class="card" onclick="starEffect(event)">
+            <div class="card" onmouseover="siyaSpeak('These items are limited edition!')">
                 <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000">
-                <h3>NEO CLOUD 01</h3>
-                <button class="btn">ACCESS</button>
+                <h3>AERO COLLECTION</h3>
             </div>
-            <div class="card" onclick="starEffect(event)">
+            <div class="card" onmouseover="siyaSpeak('Click to explore the details!')">
                 <img src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1000">
-                <h3>SKY DREAM 02</h3>
-                <button class="btn">ACCESS</button>
+                <h3>CLOUD WEAR</h3>
             </div>
         </section>
     </div>
 
     <script>
-        // --- توليد الغيوم البيضاء ---
+        // 1. توليد الغيوم والنجوم (بقت كما هي للجمالية)
         const cloudContainer = document.getElementById('clouds');
         for (let i = 0; i < 8; i++) {
             const cloud = document.createElement('div');
             cloud.className = 'cloud';
             const size = Math.random() * 200 + 150;
-            cloud.style.width = size + 'px';
-            cloud.style.height = (size * 0.6) + 'px';
-            cloud.style.top = Math.random() * 80 + 'vh';
-            cloud.style.left = Math.random() * 100 + 'vw';
+            cloud.style.width = size + 'px'; cloud.style.height = (size * 0.6) + 'px';
+            cloud.style.top = Math.random() * 80 + 'vh'; cloud.style.left = Math.random() * 100 + 'vw';
             cloud.style.setProperty('--d', (Math.random() * 20 + 20) + 's');
             cloudContainer.appendChild(cloud);
         }
 
-        // --- توليد النجوم الزرقاء Y2K ---
-        for (let i = 0; i < 40; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.innerHTML = '✦'; 
-            star.style.top = Math.random() * 100 + 'vh';
-            star.style.left = Math.random() * 100 + 'vw';
-            star.style.animationDelay = Math.random() * 5 + 's';
-            document.body.appendChild(star);
+        // 2. منطق ظهور Siya
+        const siya = document.getElementById('siya-guide');
+        const bubble = document.getElementById('siya-bubble');
+
+        // تظهر Siya بعد ثانيتين من فتح الموقع
+        setTimeout(() => {
+            siya.style.bottom = "0px";
+            setTimeout(() => {
+                showBubble("Hello! I am Siya, your digital guide. How can I help you?");
+            }, 1000);
+        }, 2000);
+
+        function showBubble(text) {
+            bubble.innerText = text;
+            bubble.style.opacity = "1";
+            bubble.style.transform = "scale(1)";
+            setTimeout(() => {
+                bubble.style.opacity = "0";
+                bubble.style.transform = "scale(0)";
+            }, 5000); // تختفي الفقاعة بعد 5 ثواني
         }
 
-        // --- تأثير الضغط (انفجار نجوم) ---
-        function starEffect(e) {
-            for(let i=0; i<8; i++) {
-                const s = document.createElement('div');
-                s.innerHTML = '✦';
-                s.style.cssText = `position:fixed; left:${e.clientX}px; top:${e.clientY}px; color:var(--y2k-blue); z-index:2000; font-size:25px; pointer-events:none;`;
-                document.body.appendChild(s);
-                gsap.to(s, {
-                    x: (Math.random()-0.5)*200, y: (Math.random()-0.5)*200,
-                    opacity: 0, rotation: 360, duration: 1, onComplete: () => s.remove()
-                });
-            }
+        function siyaSpeak(text) {
+            showBubble(text);
+        }
+
+        // 3. النجوم Y2K
+        for (let i = 0; i < 30; i++) {
+            const star = document.createElement('div');
+            star.className = 'star'; star.innerHTML = '✦'; 
+            star.style.top = Math.random() * 100 + 'vh'; star.style.left = Math.random() * 100 + 'vw';
+            star.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(star);
         }
     </script>
 </body>
