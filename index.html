@@ -3,180 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siya Store | NOTI</title>
+    <title>Siya Store | Noti Universe</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --sky: #a5d8ff;
-            --main: #74c0fc;
-            --deep: #1c7ed6;
+            --sky-blue: #a5d8ff;
+            --y2k-blue: #74c0fc;
+            --deep-blue: #1c7ed6;
             --white: #ffffff;
         }
 
         body { 
             margin: 0; background: var(--white); 
-            font-family: 'Outfit', sans-serif; overflow-x: hidden; 
-            cursor: none; /* غادي نعوضو الماوس بواحد الدائرة سحرية */
+            font-family: 'Outfit', sans-serif; overflow: hidden;
+            color: var(--deep-blue);
         }
 
-        /* Custom Cursor */
-        #cursor {
-            position: fixed; width: 20px; height: 20px;
-            background: rgba(116, 192, 252, 0.3); border: 2px solid var(--main);
-            border-radius: 50%; pointer-events: none; z-index: 9999;
-            transition: transform 0.1s ease;
-        }
-
+        /* الطبقة الخلفية للنجوم والغيوم */
         canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
 
+        /* حاوية المحتوى */
+        .ui-content { position: relative; z-index: 10; height: 100vh; overflow-y: auto; }
+
+        /* Navbar الفخمة */
         nav {
-            position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between;
-            align-items: center; padding: 20px 5%; box-sizing: border-box; z-index: 1000;
+            position: sticky; top: 0; width: 100%; display: flex; justify-content: space-between;
+            align-items: center; padding: 15px 5%; box-sizing: border-box; z-index: 1000;
+            background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(12px);
         }
         
-        .nav-logo img { height: 80px; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .nav-logo img:hover { transform: scale(1.1) rotate(5deg); }
+        .nav-logo img { height: 75px; filter: drop-shadow(0 0 10px var(--sky-blue)); }
 
+        /* Hero Section */
         .hero {
-            height: 100vh; display: flex; flex-direction: column; justify-content: center;
-            align-items: center; text-align: center; position: relative; z-index: 10;
+            height: 80vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center;
         }
 
         .hero h1 { 
-            font-size: clamp(4rem, 15vw, 9rem); font-weight: 900; color: var(--deep);
-            margin: 0; pointer-events: none;
+            font-size: clamp(3.5rem, 12vw, 8rem); font-weight: 900; margin: 0;
+            background: linear-gradient(to bottom, var(--deep-blue), var(--sky-blue));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        /* Interactive Product Cards */
+        /* Products Grid */
         .products { 
-            padding: 100px 5%; display: grid; 
+            padding: 50px 5%; display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 50px; position: relative; z-index: 10;
+            gap: 30px; max-width: 1200px; margin: auto;
         }
 
-        .card {
-            background: rgba(255, 255, 255, 0.8); border-radius: 40px;
-            padding: 20px; border: 1px solid var(--sky);
-            transition: all 0.3s ease; text-align: center;
-            box-shadow: 0 10px 30px rgba(116, 192, 252, 0.1);
+        .y2k-card {
+            background: rgba(255, 255, 255, 0.7); border: 1.5px solid var(--sky-blue);
+            padding: 20px; border-radius: 35px; text-align: center;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer; position: relative; overflow: hidden;
         }
 
-        .card:hover {
-            transform: translateY(-10px);
-            border-color: var(--main);
-            box-shadow: 0 20px 50px rgba(116, 192, 252, 0.3);
+        .y2k-card:hover { 
+            transform: scale(1.03); border-color: var(--deep-blue);
+            box-shadow: 0 15px 40px rgba(116, 192, 252, 0.2);
         }
 
-        .card img { width: 100%; border-radius: 30px; margin-bottom: 15px; }
+        .y2k-card img { width: 100%; border-radius: 25px; margin-bottom: 15px; }
 
-        .btn {
-            padding: 15px 35px; background: var(--deep); color: white;
-            border: none; border-radius: 50px; font-weight: 700;
-            cursor: pointer; transition: 0.3s;
+        .btn-buy {
+            padding: 12px 30px; background: var(--deep-blue); color: white;
+            border: none; border-radius: 50px; font-weight: 700; cursor: pointer;
         }
 
-        .btn:active { transform: scale(0.9); }
-
+        /* Custom Cursor */
+        #magic-cursor {
+            position: fixed; width: 25px; height: 25px; border: 2px solid var(--y2k-blue);
+            border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+        }
     </style>
 </head>
 <body>
 
-    <div id="cursor"></div>
+    <div id="magic-cursor"></div>
 
-    <nav>
-        <div class="nav-logo"><img src="assets/logo.jpg" onerror="this.src='assets/logo.png'" alt="Siya Store"></div>
-        <div style="font-weight: 900; letter-spacing: 5px; color: var(--main);">MENU</div>
-    </nav>
+    <div class="ui-content">
+        <nav>
+            <div class="nav-logo"><img src="assets/logo.jpg" onerror="this.src='assets/logo.png'" alt="Siya Store"></div>
+            <div style="font-weight: 900; color: var(--y2k-blue);">ARCHIVE 2.0</div>
+        </nav>
 
-    <div class="hero">
-        <p style="letter-spacing: 10px; color: var(--main);">COLLECTION BY NOTI</p>
-        <h1>SIYA STORE</h1>
-    </div>
+        <section class="hero">
+            <h1 onclick="spawnStars(event)">SIYA STORE</h1>
+            <p style="letter-spacing: 8px; font-weight: 300;">CURATED BY NOTI</p>
+        </section>
 
-    <div class="products">
-        <div class="card" onclick="playEffect(event)">
-            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000">
-            <h3>Sky Element #01</h3>
-            <button class="btn">VIEW DETAILS</button>
-        </div>
-        <div class="card" onclick="playEffect(event)">
-            <img src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1000">
-            <h3>Cloud Element #02</h3>
-            <button class="btn">VIEW DETAILS</button>
-        </div>
+        <section class="products">
+            <div class="y2k-card" onclick="spawnStars(event)">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000">
+                <h3>AERO PIECE #01</h3>
+                <button class="btn-buy">COLLECT</button>
+            </div>
+            <div class="y2k-card" onclick="spawnStars(event)">
+                <img src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1000">
+                <h3>NEO CLOUD #02</h3>
+                <button class="btn-buy">COLLECT</button>
+            </div>
+        </section>
     </div>
 
     <script>
-        // --- 1. Custom Cursor Follower ---
-        const cursor = document.getElementById('cursor');
+        // --- 1. الماوس السحري ---
+        const cursor = document.getElementById('magic-cursor');
         document.addEventListener('mousemove', (e) => {
-            gsap.to(cursor, { x: e.clientX - 10, y: e.clientY - 10, duration: 0.2 });
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.15 });
         });
 
-        // --- 2. Magnetic/Click Effect ---
-        function playEffect(e) {
-            // تأثير انفجار سحابي عند الضغط
-            for(let i=0; i<8; i++) {
-                const particle = document.createElement('div');
-                particle.style.cssText = `
+        // --- 2. تأثير انفجار النجوم عند الضغط ---
+        function spawnStars(e) {
+            for(let i=0; i<10; i++) {
+                const star = document.createElement('div');
+                star.innerHTML = '✦'; // نجمة Y2K
+                star.style.cssText = `
                     position: fixed; left: ${e.clientX}px; top: ${e.clientY}px;
-                    width: 15px; height: 15px; background: var(--main);
-                    border-radius: 50%; pointer-events: none; z-index: 2000;
-                    opacity: 0.6;
+                    color: var(--y2k-blue); font-size: 20px; z-index: 2000; pointer-events: none;
                 `;
-                document.body.appendChild(particle);
-                gsap.to(particle, {
-                    x: (Math.random() - 0.5) * 200,
-                    y: (Math.random() - 0.5) * 200,
-                    opacity: 0,
-                    scale: 0,
-                    duration: 1,
-                    onComplete: () => particle.remove()
+                document.body.appendChild(star);
+                gsap.to(star, {
+                    x: e.clientX + (Math.random()-0.5)*200,
+                    y: e.clientY + (Math.random()-0.5)*200,
+                    opacity: 0, scale: 0, duration: 1, onComplete: () => star.remove()
                 });
             }
         }
 
-        // --- 3. 3D Clouds Background Control ---
+        // --- 3. خلفية الغيوم والنجوم (Three.js) ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Spheres that act like "Soft Clouds"
+        // غيوم بيضاء ناعمة
         const clouds = [];
-        const geom = new THREE.SphereGeometry(1, 32, 32);
+        const cloudGeom = new THREE.SphereGeometry(1.5, 32, 32);
         for(let i=0; i<15; i++) {
-            const mat = new THREE.MeshPhongMaterial({ color: 0x74c0fc, transparent: true, opacity: 0.2 });
-            const cloud = new THREE.Mesh(geom, mat);
-            cloud.position.set((Math.random()-0.5)*10, (Math.random()-0.5)*10, (Math.random()-0.5)*10);
+            const cloudMat = new THREE.MeshPhongMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 });
+            const cloud = new THREE.Mesh(cloudGeom, cloudMat);
+            cloud.position.set((Math.random()-0.5)*20, (Math.random()-0.5)*15, (Math.random()-0.5)*10);
             scene.add(cloud);
             clouds.push(cloud);
         }
 
-        scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-        const light = new THREE.PointLight(0xffffff, 1);
-        light.position.set(5, 5, 5);
-        scene.add(light);
+        // نجوم زرقاء ثابتة كتحرك ببطء
+        const starGeom = new THREE.BufferGeometry();
+        const starCount = 400;
+        const posArray = new Float32Array(starCount * 3);
+        for(let i=0; i<starCount*3; i++) posArray[i] = (Math.random()-0.5)*30;
+        starGeom.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const starMat = new THREE.PointsMaterial({ size: 0.05, color: 0x74c0fc });
+        const starField = new THREE.Points(starGeom, starMat);
+        scene.add(starField);
 
-        camera.position.z = 5;
+        scene.add(new THREE.AmbientLight(0xffffff, 1));
+        camera.position.z = 8;
 
-        // Mouse Move -> Control Scene
+        // تحكم في الكاميرا بالماوس
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth - 0.5) * 2;
             const y = (e.clientY / window.innerHeight - 0.5) * 2;
-            gsap.to(camera.position, { x: x, y: -y, duration: 1.5 });
+            gsap.to(camera.position, { x: x*2, y: -y*2, duration: 2 });
         });
 
         function animate() {
             requestAnimationFrame(animate);
-            clouds.forEach(c => {
-                c.rotation.y += 0.002;
-                c.position.y += Math.sin(Date.now() * 0.001) * 0.002;
-            });
+            clouds.forEach(c => c.rotation.y += 0.001);
+            starField.rotation.y += 0.0005;
             renderer.render(scene, camera);
         }
         animate();
