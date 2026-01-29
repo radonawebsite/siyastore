@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siya Store | Official AI Universe</title>
+    <title>Siya Store | Official Universe</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
     
@@ -27,35 +27,52 @@
         .star { position: absolute; color: var(--y2k-blue); font-size: 20px; z-index: 2; animation: blink 2s infinite ease-in-out; }
         @keyframes blink { 0%, 100% { opacity: 0; transform: scale(0.5); } 50% { opacity: 1; transform: scale(1.2); } }
 
-        /* --- شخصية Siya (المرشدة) --- */
+        /* --- نظام المرشدة Siya الجديد --- */
         #siya-guide {
-            position: fixed; bottom: -500px; right: 20px;
-            width: 260px; z-index: 9999;
+            position: fixed; 
+            bottom: -500px; /* مخفية */
+            right: 20px;
+            display: flex;
+            align-items: center; /* باش تكون الفقاعة في جنبها */
+            z-index: 9999;
             transition: bottom 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex; flex-direction: column; align-items: flex-end;
         }
-
-        #siya-guide img { width: 100%; height: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15)); }
 
         .bubble {
-            background: white; border: 3px solid var(--y2k-blue);
-            padding: 15px; border-radius: 25px 25px 0 25px;
-            font-size: 0.9rem; font-weight: 900; color: var(--deep-blue);
-            margin-bottom: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            opacity: 0; transform: scale(0.8); transition: 0.4s ease;
-            width: 220px; text-align: center;
+            background: white; 
+            border: 3px solid var(--y2k-blue);
+            padding: 15px; 
+            border-radius: 20px 20px 0 20px;
+            font-size: 0.9rem; 
+            font-weight: 900; 
+            color: var(--deep-blue);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 180px; 
+            text-align: center;
+            margin-right: 15px; /* مسافة بينها وبين Siya */
+            opacity: 0; 
+            transform: translateX(20px) scale(0.8); 
+            transition: all 0.4s ease;
+            pointer-events: none;
+            visibility: hidden; /* باش ما تبقاش شادة البلاصة وهي مخفية */
         }
 
-        .bubble-on { opacity: 1; transform: scale(1); }
+        .bubble-active { 
+            opacity: 1; 
+            visibility: visible;
+            transform: translateX(0) scale(1); 
+        }
 
-        /* --- الواجهة --- */
+        #siya-guide img { 
+            width: 220px; /* حجم الشخصية */
+            height: auto; 
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15)); 
+        }
+
+        /* --- باقي الواجهة --- */
         .content { position: relative; z-index: 10; padding-top: 120px; text-align: center; }
         nav { position: fixed; top: 0; width: 100%; padding: 20px 5%; background: rgba(255,255,255,0.6); backdrop-filter: blur(15px); border-bottom: 2px solid var(--sky-blue); z-index: 1000; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; }
         .logo { height: 60px; }
-        .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; padding: 50px 5%; max-width: 1200px; margin: auto; }
-        .card { background: rgba(255,255,255,0.8); border: 2px solid var(--sky-blue); border-radius: 40px; padding: 20px; transition: 0.3s; cursor: pointer; }
-        .card:hover { transform: translateY(-10px); border-color: var(--deep-blue); }
-        .card img { width: 100%; border-radius: 30px; }
     </style>
 </head>
 <body>
@@ -68,28 +85,17 @@
     </nav>
 
     <div id="siya-guide">
-        <div class="bubble" id="siya-bubble">Welcome to Siya Store! ✨</div>
-        <img src="assets/siya.jpg" id="siya-img" alt="Siya Guide">
+        <div class="bubble" id="siya-bubble">Welcome back! ✨</div>
+        <img src="assets/siya.jpg" id="siya-img" alt="Siya">
     </div>
 
     <div class="content">
         <h1 style="font-size: clamp(3rem, 10vw, 6rem); color: var(--deep-blue); margin: 0;">SIYA STORE</h1>
         <p style="letter-spacing: 5px; color: var(--y2k-blue); font-weight: 600;">GUIDED BY AI</p>
-
-        <div class="products">
-            <div class="card" onmouseover="speak('Need help choosing? ✨')">
-                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000">
-                <h3>AERO COLLECTION</h3>
-            </div>
-            <div class="card" onmouseover="speak('This style is so Y2K! ✦')">
-                <img src="https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=1000">
-                <h3>CLOUD PIECE</h3>
-            </div>
-        </div>
     </div>
 
     <script>
-        // 1. الغيوم والنجوم
+        // 1. الغيوم والنجوم (كما هي)
         const sky = document.getElementById('sky-container');
         for (let i = 0; i < 8; i++) {
             const c = document.createElement('div');
@@ -100,29 +106,26 @@
             c.style.setProperty('--d', (Math.random() * 20 + 20) + 's');
             sky.appendChild(c);
         }
-        for (let i = 0; i < 40; i++) {
-            const st = document.createElement('div');
-            st.className = 'star'; st.innerHTML = '✦';
-            st.style.top = Math.random() * 100 + 'vh'; st.style.left = Math.random() * 100 + 'vw';
-            st.style.animationDelay = Math.random() * 5 + 's';
-            document.body.appendChild(st);
-        }
 
-        // 2. ظهور Siya
+        // 2. منطق الكلام والظهور
         const siya = document.getElementById('siya-guide');
         const bubble = document.getElementById('siya-bubble');
         
         window.onload = () => {
             setTimeout(() => {
-                siya.style.bottom = "0px"; // طلوع الشخصية
-                setTimeout(() => speak("Hi! I'm Siya. Let's shop! ✨"), 1000);
+                siya.style.bottom = "0px"; // تطلع Siya
+                setTimeout(() => speak("Welcome! I'm here to help you ✨"), 1000);
             }, 800);
         };
 
         function speak(text) {
             bubble.innerText = text;
-            bubble.classList.add('bubble-on');
-            setTimeout(() => bubble.classList.remove('bubble-on'), 4000);
+            bubble.classList.add('bubble-active');
+            
+            // تختفي الفقاعة تماماً بعد 4 ثواني
+            setTimeout(() => {
+                bubble.classList.remove('bubble-active');
+            }, 4000);
         }
     </script>
 </body>
